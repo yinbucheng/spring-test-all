@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:reg="http://www.dangdang.com/schema/ddframe/reg"
+       xmlns:job="http://www.dangdang.com/schema/ddframe/job"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.dangdang.com/schema/ddframe/reg
+                        http://www.dangdang.com/schema/ddframe/reg/reg.xsd
+                        http://www.dangdang.com/schema/ddframe/job
+                        http://www.dangdang.com/schema/ddframe/job/job.xsd
+                        ">
+    <!--配置作业注册中心-->
+    <reg:zookeeper id="regCenter" server-lists="${elaticjob.zookeeper.server-lists}" namespace="${elaticjob.zookeeper.namespace}"
+                   base-sleep-time-milliseconds="1000" max-sleep-time-milliseconds="3000" max-retries="3"/>
+
+    <!-- 配置作业-->
+    <job:simple id="JobDemo1" class="cn.intellif.springelastijob1.job.MyJob" registry-center-ref="regCenter"
+                cron="0/60 * * * * ?" sharding-total-count="1"/>
+
+    <!-- 配置作业-->
+    <!--<job:simple id="JobDemo2" class="cn.intellif.springelastijob1.job.MyJob2" registry-center-ref="regCenter"-->
+                <!--cron="0/10 * * * * ?" sharding-total-count="3" sharding-item-parameters="0=A,1=B,2=C"/>-->
+</beans>
+
+    <!--配置作业-->
+    <!--<cn.intellif.springelastijob2.job:simple id="代表任务id，同一个id的多个实例会被Elastic-Job-Lite当作同一个任务"-->
+    <!--class="编写的任务路径"-->
+    <!--registry-center-ref="配置作业注册中心 指定的id名称"-->
+    <!--cron="任务执行规则表达式"-->
+    <!--sharding-total-count="定义切片数量，当部署多个项目实例，需要多个实例配合执行比较大的任务时，配置此属性，-->
+    <!--如：任务demoSimpleJob1有三个分片 当只有一个实例时3个分片都有唯一的实例去执行，当有多于一个实例时，-->
+    <!--任务将会按分片分给不同的实例并行执行（任务最多分给定义的分片数量3个实例执行），当有超过3个实例，多出的实例将不执行任务。-->
+    <!--能够并行执行的任务必须相互独立，如：更新用户表中的某个字段，可以让第一个分片更新1&#45;&#45;10000条数据，-->
+    <!--第二个分片更新10001&#45;&#45;20000条数据以此类推。逻辑需要在自己的任务中去写分片逻辑实现"-->
+    <!--sharding-item-parameters="为每个切片取一个别名，可以不填" />-->
